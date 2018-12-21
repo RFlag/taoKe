@@ -4,23 +4,23 @@ import(
 	"time"
 )
 
-type Data1 struct {
+type DTKData1 struct {
 	Data DataInfo1
 }
 
-type Data2 struct {
+type DTKData2 struct {
 	Data   DataInfo2
-	Result []Result2
+	Result []DTKResult2
 }
 
-type Data3 struct {
+type DTKData3 struct {
 	Data   DataInfo2
-	Result []Result1
+	Result []DTKResult1
 }
 
-type Data4 struct {
+type DTKData4 struct {
 	Data   DataInfo2
-	Result Result1
+	Result DTKResult1
 }
 
 type DataInfo1 struct {
@@ -28,7 +28,7 @@ type DataInfo1 struct {
 	UpdateTime string     `json:"update_time"`
 	TotalNum   int        `json:"total_num"`
 	ApiContent string     `json:'api_content'`
-	Result     *[]Result2 `json:"result"`
+	Result     *[]DTKResult2 `json:"result"`
 }
 
 type DataInfo2 struct {
@@ -38,7 +38,7 @@ type DataInfo2 struct {
 	ApiContent string `json:'api_content'`
 }
 
-type Result struct {
+type DTKResult struct {
 	Id                int       `json:"ID" db:"id"`
 	CreateAt          time.Time `json:"create_at" db:"create_at"`
 	GoodsId           string    `json:"GoodsId" db:"goods_id"`
@@ -70,7 +70,7 @@ type Result struct {
 	QueSiteid         string    `json:"Que_siteid" db:"que_siteid"`
 }
 
-type Result1 struct {
+type DTKResult1 struct {
 	Id                string  `json:"ID"`
 	GoodsId           string  `json:"GoodsId"`
 	Title             string  `json:"Title"`
@@ -101,7 +101,7 @@ type Result1 struct {
 	QueSiteid         string  `json:"Que_siteid"`
 }
 
-type Result2 struct {
+type DTKResult2 struct {
 	Id                int     `json:"ID"`
 	GoodsId           string  `json:"GoodsId"`
 	Title             string  `json:"Title"`

@@ -21,8 +21,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-func WebsiteSpecial() (*entity.Data1, error) {
-	data := new(entity.Data1)
+func WebsiteSpecial() (*entity.DTKData1, error) {
+	data := new(entity.DTKData1)
 	req, err := http.NewRequest("GET", "http://api.dataoke.com/index.php?r=goodsLink/www&type=www_quan&appkey="+conf.Appkey+"&v=2", nil)
 	if err != nil {
 		return nil, err
@@ -42,8 +42,8 @@ func WebsiteSpecial() (*entity.Data1, error) {
 	return data, nil
 }
 
-func QqSpecial() (*entity.Data1, error) {
-	data := new(entity.Data1)
+func QqSpecial() (*entity.DTKData1, error) {
+	data := new(entity.DTKData1)
 	req, err := http.NewRequest("GET", "http://api.dataoke.com/index.php?r=goodsLink/qq&type=qq_quan&appkey="+conf.Appkey+"&v=2", nil)
 	if err != nil {
 		return nil, err
@@ -63,13 +63,13 @@ func QqSpecial() (*entity.Data1, error) {
 	return data, nil
 }
 
-func DrawCoupon() (*entity.Data2, error) {
+func DrawCoupon() (*entity.DTKData2, error) {
 	err:=emptyData("dataoke_lingquan")
 	if err != nil {
 		return nil,err
 	}
 
-	data := new(entity.Data2)
+	data := new(entity.DTKData2)
 	// resultId:=[]int{}
 	req, err := http.NewRequest("GET", "http://api.dataoke.com/index.php?r=Port/index&type=total&appkey="+conf.Appkey+"&v=2", nil)
 	if err != nil {
@@ -108,7 +108,7 @@ func DrawCoupon() (*entity.Data2, error) {
 					case <-ctx.Done():
 						return
 					}
-					data := new(entity.Data2)
+					data := new(entity.DTKData2)
 					req, err := http.NewRequest("GET", "http://api.dataoke.com/index.php?r=Port/index&type=total&appkey="+conf.Appkey+"&v=2&page="+strconv.Itoa(page), nil)
 					if err != nil {
 						log.Println("调用领券接口失败",err)
@@ -130,7 +130,7 @@ func DrawCoupon() (*entity.Data2, error) {
 						continue
 					}
 
-					func(result []entity.Result2) {
+					func(result []entity.DTKResult2) {
 						safeclose.Do(func() {
 							sqlParam := []interface{}{}
 							for _, row := range result {
@@ -169,8 +169,8 @@ func DrawCoupon() (*entity.Data2, error) {
 	return data, nil
 }
 
-func DrawCouponList(page,psize int) ([]entity.Result,int,error)  {
-	result:=[]entity.Result{}
+func DrawCouponList(page,psize int) ([]entity.DTKResult,int,error)  {
+	result:=[]entity.DTKResult{}
 	total := 0
 	err := ftsql.DB.QueryRow(`select count(1) from dataoke_lingquan`,).Scan(&total)
 	if err != nil {
@@ -184,13 +184,13 @@ func DrawCouponList(page,psize int) ([]entity.Result,int,error)  {
 	return result,total,nil
 }
 
-func Top100Popularity() (*entity.Data3, error) {
+func Top100Popularity() (*entity.DTKData3, error) {
 	err:=emptyData("dataoke_top")
 	if err != nil {
 		return nil,err
 	}
 
-	data := new(entity.Data3)
+	data := new(entity.DTKData3)
 	req, err := http.NewRequest("GET", "http://api.dataoke.com/index.php?r=Port/index&type=top100&appkey="+conf.Appkey+"&v=2", nil)
 	if err != nil {
 		return nil, err
@@ -238,8 +238,8 @@ func Top100Popularity() (*entity.Data3, error) {
 	return data, nil
 }
 
-func Top100PopularityList(page,psize int)([]entity.Result,int,error)  {
-	result:=[]entity.Result{}
+func Top100PopularityList(page,psize int)([]entity.DTKResult,int,error)  {
+	result:=[]entity.DTKResult{}
 	total := 0
 	err := ftsql.DB.QueryRow(`select count(1) from dataoke_top`,).Scan(&total)
 	if err != nil {
@@ -253,13 +253,13 @@ func Top100PopularityList(page,psize int)([]entity.Result,int,error)  {
 	return result,total,nil
 }
 
-func RealtimeAmount() (*entity.Data3, error) {
+func RealtimeAmount() (*entity.DTKData3, error) {
 	err:=emptyData("dataoke_paoliang")
 	if err != nil {
 		return nil,err
 	}
 
-	data := new(entity.Data3)
+	data := new(entity.DTKData3)
 	req, err := http.NewRequest("GET", "http://api.dataoke.com/index.php?r=Port/index&type=paoliang&appkey="+conf.Appkey+"&v=2", nil)
 	if err != nil {
 		return nil, err
@@ -306,8 +306,8 @@ func RealtimeAmount() (*entity.Data3, error) {
 	return data, nil
 }
 
-func RealtimeAmountList(page,psize int)([]entity.Result,int,error)  {
-	result:=[]entity.Result{}
+func RealtimeAmountList(page,psize int)([]entity.DTKResult,int,error)  {
+	result:=[]entity.DTKResult{}
 	total := 0
 	err := ftsql.DB.QueryRow(`select count(1) from dataoke_paoliang`,).Scan(&total)
 	if err != nil {
@@ -321,8 +321,8 @@ func RealtimeAmountList(page,psize int)([]entity.Result,int,error)  {
 	return result,total,nil
 }
 
-func Goods(id int) (*entity.Data4, error) {
-	data := new(entity.Data4)
+func Goods(id int) (*entity.DTKData4, error) {
+	data := new(entity.DTKData4)
 	req, err := http.NewRequest("GET", "http://api.dataoke.com/index.php?r=port/index&appkey="+conf.Appkey+"&v=2&id="+strconv.Itoa(id), nil)
 	if err != nil {
 		return nil, err
@@ -392,18 +392,6 @@ func addCommodity(tx sqlx.Ext, sqlTable string, sub int, sqlParam []interface{})
 	return nil
 }
 
-func batchResult(size int, data []entity.Result2) [][]entity.Result2 {
-	batch := [][]entity.Result2{}
-	for i, n := 0, len(data); i < n; i += size {
-		end := i + size
-		if end > n {
-			batch = append(batch, data[i:])
-		} else {
-			batch = append(batch, data[i:end])
-		}
-	}
-	return batch
-}
 
 func emptyData(sqlTable string) error  {
 	result, err := ftsql.DB.Exec(`DELETE from `+sqlTable)
