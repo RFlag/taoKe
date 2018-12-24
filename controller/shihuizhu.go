@@ -5,7 +5,6 @@ import (
 	"math"
 	"project/dingdangke-dataoke/model"
 	"project/ftgo"
-	"time"
 )
 
 // 商品类别
@@ -109,7 +108,6 @@ func Grab(c *gin.Context) {
 // 半价
 func HalfPrice(c *gin.Context) {
 	var param struct {
-		End   time.Time `json:"end" form:"end" time_format:"2006-01-02T15:04:05Z07:00"`
 		Page  int `json:"page" form:"page"`
 		Psize int `json:"psize" form:"psize"`
 	}
@@ -123,7 +121,7 @@ func HalfPrice(c *gin.Context) {
 	if param.Psize <= 0 {
 		param.Psize = 10
 	}
-	data, total, err := model.HalfPrice(param.End, param.Page, param.Psize)
+	data, total, err := model.HalfPrice(param.Page, param.Psize)
 	if err != nil {
 		c.AbortWithError(400, err).SetMeta(ResultDrawCouponError).SetType(gin.ErrorTypePublic)
 		return

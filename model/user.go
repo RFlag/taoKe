@@ -21,3 +21,8 @@ func Register(db sqlx.Ext, mobile string) (int, error) {
 
 	return int(lastInsertId), nil
 }
+
+// 用户信息
+func UserInfo()  {
+	
+}

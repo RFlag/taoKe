@@ -11,6 +11,7 @@ type SHZData struct {
 }
 
 type SHZResult struct {
+	Id 				int     `db:"id"`
 	Gid             string  `db:"gid" json:"gid"`//商品淘宝id
 	Cate            string  `db:"cate" json:"cate"`//分类名称
 	Site            string  `db:"site" json:"site"`//所属站点：tmall 天猫，taobao 淘宝
@@ -44,7 +45,7 @@ type SHZResult struct {
 	IntroFoot       string  `db:"intro_foot" json:"intro_foot"`//推荐理由
 	Timeline        string  `db:"timeline" json:"timeline"`//更新时间
 	Stoptime        string  `db:"stoptime" json:"stoptime"`//结束时间
-	Id              string  `db:"id" json:"id"`//分类ID
+	TypeId         string   `db:"type_id" json:"id"`//分类ID
 	ActivityId      string  `db:"activity_id" json:"activity_id"`//活动ID
 	NewUrl          string  `db:"new_url" json:"new_url"`//二合一链接
 	CouponStartTime string  `db:"coupon_start_time" json:"coupon_start_time"`//优惠券开始时间

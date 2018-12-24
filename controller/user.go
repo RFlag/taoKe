@@ -62,3 +62,8 @@ func Register(c *gin.Context) {
 
 	c.JSON(200, ftgo.ResultData(result.Data))
 }
+
+// 用户信息
+func UserInfo(c *gin.Context)  {
+
+}

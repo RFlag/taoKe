@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,8 +16,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/pkg/errors"
 )
 
 // 商品分类
@@ -166,7 +165,7 @@ func GoodsList()(*entity.SHZData,error) {
 									row.SellerId, row.Url,row.PlanHigh,row.FinalSales,row.Coupon, row.CouponMoney,
 									row.CouponUrl, row.CouponTotal,row.CouponLatest, row.Timeline, row.Stoptime,
 									row.ActivityStime,row.ActivityEtime, row.CouponExpire, row.CouponCondition,
-									row.CouponStartTime,row.Id,row.ActivityId,row.NewUrl)
+									row.CouponStartTime,row.TypeId,row.ActivityId,row.NewUrl)
 							}
 							if len(data.Result) > 0 {
 								tx := ftsql.DB.MustBegin()
@@ -281,7 +280,7 @@ func CrazyToday()([]entity.SHZResult,error) {
 									row.SellerId, row.Url,row.PlanHigh,row.FinalSales,row.Coupon, row.CouponMoney,
 									row.CouponUrl, row.CouponTotal,row.CouponLatest, row.Timeline, row.Stoptime,
 									row.ActivityStime,row.ActivityEtime, row.CouponExpire, row.CouponCondition,
-									row.CouponStartTime,row.Id,row.ActivityId,row.NewUrl)
+									row.CouponStartTime,row.TypeId,row.ActivityId,row.NewUrl)
 							}
 							if len(data.Result) > 0 {
 								tx := ftsql.DB.MustBegin()
@@ -425,21 +424,41 @@ func Grab() {
 }
 
 // 半价
-func HalfPrice(end time.Time,page,psize int)([]entity.SHZResult,int,error) {
+func HalfPrice(page,psize int)([][]entity.SHZResult,int,error) {
 	result:=[]entity.SHZResult{}
-	total:=0
-	en:=end.Unix()
-	err:=ftsql.DB.QueryRow(`select count(1) from shihuizhu_goods where price<=prime/2 and stoptime>=?`,en).Scan(&total)
-	if err!=nil {
-		return nil,0,err
-	}
 
-	err=ftsql.DB.Select(&result,`select * from shihuizhu_goods where price<=prime/2 and stoptime>=? order by stoptime limit ?,?`,en,(page-1)*psize,psize)
+	//total:=0
+	t:=time.Now().Add(24*time.Hour).Format("2006-01-02")
+	en,_:=time.ParseInLocation("2006-01-02",t,time.Local)
+
+	//err:=ftsql.DB.QueryRow(`select count(1) from shihuizhu_goods where price<=prime/2 and stoptime>=?`,en.Unix()).Scan(&total)
+	//if err!=nil {
+	//	return nil,0,err
+	//}
+
+	err:=ftsql.DB.Select(&result,`select * from shihuizhu_goods where price<=prime/2 and stoptime>=? order by id`,en.Unix())
 	if err !=nil{
 		return nil,0,err
 	}
-	return result,total,nil
+	rr:=batchOrder(6,result)
+
+	return rr,30,nil
 }
+
+func batchOrder(size int, data []entity.SHZResult) [][]entity.SHZResult {
+	l:=len(data)/size
+	batch := [][]entity.SHZResult{}
+	for i, n := 0, len(data); i < n; i += l {
+		end := i + size
+		if end > n {
+			batch = append(batch, data[i:i+30])
+		} else {
+			batch = append(batch, data[i:i+30])
+		}
+	}
+	return batch
+}
+
 
 // 9.9
 func NinePNine(cateId,page,psize int)([]entity.SHZResult,int,error) {
